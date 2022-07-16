@@ -52,6 +52,8 @@ func (c *Config) GetConsumersPush() xkafka.ConsumerGroupConfig {
 		Group:     group,
 		Offset:    "last",
 		Consumers: c.Consumers.Push.Consumers,
+		User:      c.Consumers.Push.User,
+		Passwd:    c.Consumers.Push.Passwd,
 	}
 }
 
@@ -62,5 +64,7 @@ func (c *Config) GetConsumersMsg() xkafka.ConsumerGroupConfig {
 		Group:     c.ServiceConf.Name,
 		Offset:    "last",
 		Consumers: c.Consumers.Msg.Consumers,
+		User:      c.Consumers.Msg.User,
+		Passwd:    c.Consumers.Msg.Passwd,
 	}
 }
