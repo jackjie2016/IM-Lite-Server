@@ -1,17 +1,10 @@
-FROM golang:1.18-alpine AS builder
+FROM registry.cn-shanghai.aliyuncs.com/showurl-public/librdkafka-go-builder:latest AS builder
 
-# Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
     CGO_ENABLED=1  \
     GOARCH="amd64" \
     GOOS=linux \
     GOPROXY="https://goproxy.cn,direct"
-
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
-RUN apk -U add ca-certificates
-RUN apk update && apk upgrade && apk add pkgconf git bash build-base sudo
-RUN git clone https://github.91chi.fun//https://github.com/edenhill/librdkafka.git && cd librdkafka && ./configure --prefix /usr && make && make install
-
 # Move to working directory /build
 WORKDIR /go/src/github.com/IM-Lite
 RUN git clone https://github.91chi.fun//https://github.com/IM-Lite/IM-Lite-Server.git
@@ -20,7 +13,7 @@ RUN go mod download
 
 # Build the application
 WORKDIR /go/src/github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket
-RUN go build --ldflags "-extldflags -static" -o main .
+RUN go build -tags musl --ldflags "-extldflags -static" -o main .
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
