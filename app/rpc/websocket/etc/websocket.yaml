@@ -1,0 +1,55 @@
+Name: websocket-rpc
+ListenOn: :30000 # rpc 端口号
+Mode: dev
+
+Websocket:
+  Port: 31000 # websocket 端口号
+  MaxConnNum: 10000 # 最大连接数
+
+Log:
+  ServiceName: websocket-rpc
+  Level: info
+
+Telemetry: # 链路追踪
+  Name: websocket-rpc
+  Endpoint: http://127.0.0.1:14268/api/traces # 追踨服务地址
+  Sampler: 1.0
+  Batcher: jaeger
+
+Redis: # redis 配置
+  Host: localhost:6379
+  Pass: "123456"
+  DB: 4
+
+Mongo: # mongo 配置
+  Uri: mongodb://localhost/admin
+  DBTimeout: 10
+  Database: im_lite
+
+Pushers: # 生产者配置
+  Msg:
+    Addrs:
+      - 172.40.2.9:9092
+    Topic: im_lite_sendmsg_v1
+  Push:
+    Addrs:
+      - 172.40.2.9:9092
+    Topic: im_lite_push_v1
+
+Consumers: # 消费者配置
+  Msg:
+    Addrs:
+      - 172.40.2.9:9092
+    Topic: im_lite_sendmsg_v1
+    Group: "websocket-rpc"
+    Consumers: 10
+    User: ""
+    Passwd: ""
+  Push:
+    Addrs:
+      - 172.40.2.9:9092
+    Topic: im_lite_push_v1
+    Group: "" # 如果为空，并且环境变量中传递了 `POD_NAME` 会赋此值。默认是 websocket-rpc
+    Consumers: 10
+    User: ""
+    Passwd: ""

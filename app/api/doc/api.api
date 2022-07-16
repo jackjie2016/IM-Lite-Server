@@ -1,9 +1,86 @@
 syntax = "v1"
 
 info(
-    title: "type title here"
-    desc: "type desc here"
-    author: "type author here"
-    email: "type email here"
-    version: "type version here"
+	title: "all in one api"
+	desc: "all in one api"
+	author: "mashouyue"
+	email: "mashouyue@cherish.chat"
+	version: "v1"
 )
+// param /////////////////////////////////////////////////////////////////////////////////////////////////
+
+type ReqGetConversationList {
+}
+type ModelConversation {
+	ConvId      string `json:"convId"`
+	MaxSeq      uint32 `json:"maxSeq"`
+	MinSeq      uint32 `json:"minSeq"`
+	UnreadCount uint32 `json:"unreadCount"`
+}
+type RespGetConversationList {
+	Conversations []*ModelConversation `json:"conversations"`
+}
+type ReqPullMessage {
+	ConvId    string   `json:"convId"`
+	SeqList   []uint32 `json:"seqList"`
+	OldestSeq uint32   `json:"oldestSeq,optional"`
+	PageSize  int32    `json:"pageSize,optional"`
+}
+type ReqPullMessages {
+	Convs []*ReqPullMessage `json:"convs"`
+}
+type RespPullMessages {
+	MessageLists []byte `json:"messages"`
+}
+type ReqSendMessage {
+	Message []byte `json:"message"`
+}
+type RespSendMessage {
+	FailedMsg string `json:"failedMsg"`
+}
+type ReqClearUnreadCount {
+	ConvId string `json:"convId"`
+}
+type RespClearUnreadCount {
+}
+type ReqClearHistory {
+	ConvId string `json:"convId"`
+}
+type RespClearHistory {
+}
+
+// service ///////////////////////////////////////////////////////////////////////////////////////////////
+@server(
+	middleware: Auth
+)
+service api {
+	@doc(
+		summary: "获取会话列表"
+	)
+	@handler GetConversationList
+	post /websocket/v1/conversation/list (ReqGetConversationList) returns (RespGetConversationList)
+	
+	@doc(
+		summary: "批量拉取消息"
+	)
+	@handler PullMessages
+	post /websocket/v1/message/pull/batch (ReqPullMessages) returns (RespPullMessages)
+	
+	@doc(
+		summary: "发送消息"
+	)
+	@handler SendMessage
+	post /websocket/v1/message/send (ReqSendMessage) returns (RespSendMessage)
+	
+	@doc(
+		summary: "清空未读数量"
+	)
+	@handler ClearUnreadCount
+	post /websocket/v1/conversation/clear/unread (ReqClearUnreadCount) returns (RespClearUnreadCount)
+	
+	@doc(
+		summary: "清空会话消息"
+	)
+	@handler ClearHistory
+	post /websocket/v1/conversation/clear/history (ReqClearHistory) returns (RespClearHistory)
+}

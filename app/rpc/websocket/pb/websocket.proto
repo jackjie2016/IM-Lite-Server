@@ -1,16 +1,149 @@
-
 syntax = "proto3";
+package pb;
+option go_package = "./pb";
 
-package stream;
-
-message StreamReq {
-  string name = 1;
+/******************************** enum ********************************/
+enum MsgRecvOpt {
+  RecvAndTip = 0; // 接收并提示
+  Recv = 1; // 接收但不提示
+  NotRecv = 2; // 不接收
+}
+/******************************** enum ********************************/
+enum PushEvent {
+  receiveMsg = 0; // 接收消息
+  updateConv = 1; // 会话变更
+}
+/******************************** model ********************************/
+message PushBody {
+  PushEvent event = 1; // 推送事件
+  bytes data = 2; // 推送数据
 }
 
-message StreamResp {
-  string greet = 1;
+message MsgData {
+  string clientMsgID = 1;
+  string serverMsgID = 2;
+  string senderID = 3;
+  string convID = 4;
+  int32 contentType = 5;
+  bytes content = 6;
+  int64 clientTime = 7;
+  int64 serverTime = 8;
+  uint32 seq = 9;
+  OfflinePush offlinePush = 10;
+  MsgOptions msgOptions = 11;
+}
+message MsgDataList {
+  repeated MsgData list = 1;
+}
+message OfflinePush{
+  string title = 1;
+  string desc = 2;
+  string ex = 3;
+  string iOSPushSound = 4;
+  bool iOSBadgeCount = 5;
 }
 
-service StreamGreeter {
-  rpc greet(StreamReq) returns (StreamResp);
+message MsgOptions{
+  bool storage = 1;
+  bool unread = 2;
+}
+
+message UserConversation {
+  string id = 1; // 对话id
+  string name = 2; // 对话名称
+  string avatar = 3; // 对话头像
+  uint32 seq = 4; // 对话最新消息的seq 一定是 0 开始的递增数字
+  uint32 unread = 5; // 未读消息数量
+  int64 timestamp = 6; // 最新消息的时闢戳 13位时间戳
+  bool top = 7;   // 是否置顶
+  MsgRecvOpt msgRecvOpt = 8; // 消息接收选项
+  bool isDeleted = 9; // 是否已删除
+  uint32 minSeq = 10; // 最小seq
+}
+message IMMsgDataMQ {
+  string traceId = 1;
+  MsgData msg = 2;
+}
+message IMMsgPushMQ {
+  string traceId = 1;
+  PushBody pushBody = 2;
+}
+/******************************** params ********************************/
+message ListUserConversationReq {
+  string UserId = 1;
+  int32  PageNo = 2;
+  int32  PageSize = 3; // 默认 是 5000
+}
+message ListUserConversationResp {
+  repeated UserConversation userConversations = 1;
+}
+message GetUserConversationsReq {
+  string UserId = 1;
+  repeated string ConversationIds = 2;
+}
+message GetUserConversationsResp {
+  repeated UserConversation userConversations = 1;
+}
+message ClearUnreadCountReq {
+  string UserId = 1;
+  string ConversationId = 2;
+}
+message ClearUnreadCountResp {
+}
+message DeleteConversationReq {
+  string UserId = 1;
+  string ConversationId = 2;
+}
+message DeleteConversationResp {
+}
+message DeleteConversationAllMsgReq {
+  string UserId = 1;
+  string ConversationId = 2;
+}
+message DeleteConversationAllMsgResp {
+}
+message PullMsgBySeqReq {
+  string conversationId = 1;
+  string userId = 2;
+  uint32 oldestSeq = 3; // 最旧的seq
+  int32  PageSize = 4; // 默认 是 100
+}
+message PullMsgBySeqResp {
+  string conversationId = 1;
+  repeated MsgData msgList = 2;
+}
+message SendMsgReq {
+  MsgData msg = 1;
+}
+message SendMsgResp {
+  string failedMsg = 1; // 服务繁忙 ? 不是好友 ? 已被拉黑 ?
+}
+message UpdateSubscribedConversationsReq {
+  string UserId = 1;
+  repeated string ConversationIds = 2;
+}
+message UpdateSubscribedConversationsResp {
+}
+message ListAllSubscribersByConversationReq {
+  string ConversationId = 1;
+}
+message ListAllSubscribersByConversationResp {
+  repeated string UserIds = 1;
+}
+message CreateConversationReq {
+  repeated string members = 1;
+}
+message CreateConversationResp {
+  string conversationId = 1;
+}
+service websocketService {
+  rpc SendMsg(SendMsgReq) returns (SendMsgResp);
+  rpc PullMsgBySeq(PullMsgBySeqReq) returns (PullMsgBySeqResp);
+  rpc ClearUnreadCount(ClearUnreadCountReq) returns (ClearUnreadCountResp);
+  rpc DeleteConversation(DeleteConversationReq) returns (DeleteConversationResp);
+  rpc DeleteConversationAllMsg(DeleteConversationAllMsgReq) returns (DeleteConversationAllMsgResp);
+  rpc ListUserConversation(ListUserConversationReq) returns (ListUserConversationResp);
+  rpc UpdateSubscribedConversations(UpdateSubscribedConversationsReq) returns (UpdateSubscribedConversationsResp);
+  rpc ListAllSubscribersByConversation(ListAllSubscribersByConversationReq) returns (ListAllSubscribersByConversationResp);
+  rpc CreateConversation(CreateConversationReq) returns (CreateConversationResp);
 }
