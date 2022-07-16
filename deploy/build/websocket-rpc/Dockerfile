@@ -4,7 +4,8 @@ FROM golang:buster AS builder
 ENV GO111MODULE=on \
     CGO_ENABLED=1  \
     GOARCH="amd64" \
-    GOOS=linux
+    GOOS=linux \
+    GOPROXY="https://goproxy.cn,direct"
 
 # Move to working directory /build
 WORKDIR /go/src/github.com/IM-Lite
