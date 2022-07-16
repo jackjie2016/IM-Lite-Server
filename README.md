@@ -8,6 +8,8 @@
 
 ## 配置
 
+> 如果你使用过 [go-zero](https://github.com/zeromicro/go-zero) 框架 你将对配置非常熟悉
+
 ### websocket.yaml
 
 > 以下是可修改的配置
@@ -67,7 +69,11 @@
 ## 编译安装
 
 ### websocket-rpc
+
 > 由于IM-Lite-Server使用了 [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) ，因此编译 `websocket-rpc`时 需要启用CGO
-> 
+>
 > 建议直接在 docker 容器中编译，不要在本地编译。请参考 [Dockerfile](https://github.com/IM-Lite/IM-Lite-Server/blob/master/deploy/build/websocket-rpc/Dockerfile) 文件
 
+### api
+
+> 直接编译即可
