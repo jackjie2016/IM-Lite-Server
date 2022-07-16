@@ -7,15 +7,16 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOPROXY="https://goproxy.cn,direct"
 
+
+RUN apk -U add ca-certificates
+RUN apk update && apk upgrade && apk add pkgconf git bash build-base sudo
+RUN git clone https://github.com/edenhill/librdkafka.git && cd librdkafka && ./configure --prefix /usr && make && make install
+
 # Move to working directory /build
 WORKDIR /go/src/github.com/IM-Lite
 RUN git clone https://github.91chi.fun//https://github.com/IM-Lite/IM-Lite-Server.git
 WORKDIR /go/src/github.com/IM-Lite/IM-Lite-Server
 RUN go mod download
-
-RUN apk -U add ca-certificates
-RUN apk update && apk upgrade && apk add pkgconf git bash build-base sudo
-RUN git clone https://github.com/edenhill/librdkafka.git && cd librdkafka && ./configure --prefix /usr && make && make install
 
 # Build the application
 WORKDIR /go/src/github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket
