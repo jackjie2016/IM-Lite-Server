@@ -45,7 +45,7 @@ func GetConsumer(
 		"group.id":                 cfg.Group,
 	}
 	if cfg.User != "" {
-		_ = conf.Set("sasl.mechanisms=SASL_PLAINTEXT")
+		_ = conf.Set("sasl.mechanisms=PLAIN")
 		_ = conf.Set("sasl.username=" + cfg.User)
 		_ = conf.Set("sasl.password=" + cfg.Passwd)
 	}
