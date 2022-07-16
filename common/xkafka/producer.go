@@ -33,6 +33,7 @@ func MustNewProducer(config ProducerConfig) *Producer {
 	}
 	if config.User != "" {
 		_ = conf.Set("sasl.mechanisms=PLAIN")
+		_ = conf.Set("security.protocol=SASL_PLAINTEXT")
 		_ = conf.Set("sasl.username=" + config.User)
 		_ = conf.Set("sasl.password=" + config.Passwd)
 		// 超时时间
