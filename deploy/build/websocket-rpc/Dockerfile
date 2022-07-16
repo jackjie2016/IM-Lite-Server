@@ -23,8 +23,7 @@ RUN cp /go/src/github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/main .
 
 # Build a small image
 FROM scratch
-WORKDIR /app
+WORKDIR /app/etc
 COPY --from=builder /dist/main /app/websocket
-RUN chmod +x /app/websocket && mkdir /app/etc
 VOLUME /app/etc/websocket.yaml
 ENTRYPOINT ["/app/websocket"]
