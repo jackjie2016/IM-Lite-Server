@@ -4,7 +4,7 @@
 
 ## 通讯流程
 
-[!通讯流程.svg](https://raw.githubusercontent.com/showurl/images/73a15955a98f2b6c2a21ab5be58d7ee1a89fdacc/IM-Lite%E9%80%9A%E8%AE%AF%E6%B5%81%E7%A8%8B.svg)
+![通讯流程.svg](https://raw.githubusercontent.com/showurl/images/73a15955a98f2b6c2a21ab5be58d7ee1a89fdacc/IM-Lite%E9%80%9A%E8%AE%AF%E6%B5%81%E7%A8%8B.svg)
 
 ## 配置
 
