@@ -4,7 +4,7 @@
 #brew install x86_64-unknown-linux-gnu
 #brew install aarch64-unknown-linux-gnu
 cd ../../app/rpc/websocket
-CGO_ENABLED=1 GOOS=linux go build -o ../../../../../deploy/build/websocket-rpc/bin . || exit 1
+CGO_ENABLED=1 GOOS=linux go build --ldflags "-extldflags -static" -o main . || exit 1
 cd -
 cd websocket-rpc
 docker build --platform=linux/amd64 -t registry.cn-shanghai.aliyuncs.com/pathim/websocket-rpc:latest . || exit 1
