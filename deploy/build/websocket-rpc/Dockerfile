@@ -26,4 +26,5 @@ FROM scratch
 WORKDIR /app/etc
 COPY --from=builder /dist/main /app/websocket
 VOLUME /app/etc/websocket.yaml
+WORKDIR /app
 ENTRYPOINT ["/app/websocket"]
