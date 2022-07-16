@@ -49,7 +49,7 @@ func MustNewProducer(config ProducerConfig) *Producer {
 		logx.Errorf("kafka.NewAdminClientFromProducer error: %v", err)
 		panic(err)
 	}
-	metadata, err := admin.GetMetadata(&config.Topic, false, 2000)
+	metadata, err := admin.GetMetadata(&config.Topic, false, 10000)
 	if err != nil {
 		logx.Errorf("kafka.GetMetadata error: %v", err)
 		panic(err)
