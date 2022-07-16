@@ -14,7 +14,7 @@ type ProducerConfig struct {
 	Topic     string   `json:""`
 	User      string   `json:",optional"`
 	Passwd    string   `json:",optional"`
-	Partition int      `json:",default:1"`
+	Partition int      `json:",default=1"`
 }
 
 type Producer struct {
