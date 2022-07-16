@@ -7,7 +7,7 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOPROXY="https://goproxy.cn,direct"
 
-
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk -U add ca-certificates
 RUN apk update && apk upgrade && apk add pkgconf git bash build-base sudo
 RUN git clone https://github.91chi.fun//https://github.com/edenhill/librdkafka.git && cd librdkafka && ./configure --prefix /usr && make && make install
