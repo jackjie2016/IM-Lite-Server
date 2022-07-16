@@ -20,7 +20,8 @@ import (
 	"time"
 )
 
-var url = "ws://localhost:31000?userID=%s&platform=%s&token=%s"
+//var url = "ws://localhost:31000?userID=%s&platform=%s&token=%s"
+var url = "ws://42.194.149.177:31000?userID=%s&platform=%s&token=%s"
 
 func TestWebsocket1(t *testing.T) {
 	var (
@@ -43,7 +44,7 @@ func testKeepAlive(uid string, t *testing.T) {
 			t.Fatalf("ListUserConversation error: %v", err)
 			return
 		}*/
-		request, _ := http.NewRequest("POST", "http://localhost:8888/websocket/v1/conversation/list", nil)
+		request, _ := http.NewRequest("POST", "http://42.194.149.177:8888/websocket/v1/conversation/list", nil)
 		request.Header.Set("token", "token.uid."+uid)
 		_, err := http.DefaultClient.Do(request)
 		if err != nil {
@@ -117,7 +118,8 @@ func TestWebsocketSendMsg11(t *testing.T) {
 	msgData := &pb.MsgData{
 		ClientMsgID: "4",
 		SenderID:    "unit-test-0",
-		ConvID:      "62d2375770474c14c0a09906",
+		//ConvID:      "62d2375770474c14c0a09906",
+		ConvID:      "62d2bc3a635f8f40f92f8df7",
 		ContentType: 0,
 		Content:     []byte(fmt.Sprintf("当前时间: %s", time.Now().Format("2006-01-02 15:04:05"))),
 		ClientTime:  time.Now().UnixMilli(),
@@ -130,7 +132,7 @@ func TestWebsocketSendMsg11(t *testing.T) {
 		},
 	}
 	buf, _ := proto.Marshal(msgData)
-	req, _ := http.NewRequest("POST", "http://localhost:8888/websocket/v1/message/send", bytes.NewReader(buf))
+	req, _ := http.NewRequest("POST", "http://42.194.149.177:8888/websocket/v1/message/send", bytes.NewReader(buf))
 	req.Header.Set("token", "token.uid.unit-test-0")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

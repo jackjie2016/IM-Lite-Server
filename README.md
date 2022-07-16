@@ -2,6 +2,10 @@
 
 轻量级 分布式的IM服务器
 
+## 通讯流程
+
+[!通讯流程.svg](https://raw.githubusercontent.com/showurl/images/73a15955a98f2b6c2a21ab5be58d7ee1a89fdacc/IM-Lite%E9%80%9A%E8%AE%AF%E6%B5%81%E7%A8%8B.svg)
+
 ## 配置
 
 ### websocket.yaml
@@ -62,5 +66,8 @@
 
 ## 编译安装
 
-> 由于IM-Lite-Server使用了 [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) ，因此需要启用CGO
+### websocket-rpc
+> 由于IM-Lite-Server使用了 [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) ，因此编译 `websocket-rpc`时 需要启用CGO
+> 
+> 建议直接在 docker 容器中编译，不要在本地编译。请参考 `deploy/build/websocket-rpc/Dockerfile` 文件
 
