@@ -32,7 +32,7 @@ func MustNewProducer(config ProducerConfig) *Producer {
 		"bootstrap.servers": strings.Join(config.Addrs, ","),
 	}
 	if config.User != "" {
-		_ = conf.Set("sasl.mechanisms=PLAIN")
+		_ = conf.Set("sasl.mechanisms=SASL_PLAINTEXT")
 		_ = conf.Set("sasl.username=" + config.User)
 		_ = conf.Set("sasl.password=" + config.Passwd)
 		// 超时时间
