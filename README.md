@@ -8,6 +8,11 @@
 
 ## 超快的通讯 仅需20ms
 
+- 腾讯轻量服务器4C8G
+- 腾讯CKafka丐版
+- 单机Mongo
+- 单机Redis
+
 ![jaeger.png](https://raw.githubusercontent.com/showurl/images/master/Lite-Server%20jaeger.png)
 
 ## 配置
