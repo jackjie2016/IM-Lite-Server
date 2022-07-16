@@ -69,5 +69,5 @@
 ### websocket-rpc
 > 由于IM-Lite-Server使用了 [confluent-kafka-go](https://github.com/confluentinc/confluent-kafka-go) ，因此编译 `websocket-rpc`时 需要启用CGO
 > 
-> 建议直接在 docker 容器中编译，不要在本地编译。请参考 `deploy/build/websocket-rpc/Dockerfile` 文件
+> 建议直接在 docker 容器中编译，不要在本地编译。请参考 [Dockerfile](https://github.com/IM-Lite/IM-Lite-Server/blob/master/deploy/build/websocket-rpc/Dockerfile) 文件
 
