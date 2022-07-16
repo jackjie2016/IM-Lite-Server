@@ -146,7 +146,7 @@ func (l *ConsumeLogic) ConsumerPush(ctx context.Context, conversationIDStr strin
 		}
 	}
 	w := ws.GetWs(l.svcCtx)
-	for _, uid := range listAllSubscribersByConversationResp.UserIds {
+	for _, uid := range append(listAllSubscribersByConversationResp.UserIds, msg.AddUserIds...) {
 		if msgData != nil && msgData.IsIncrUnread() {
 			err := l.svcCtx.Redis().HIncrBy(ctx, rediskey.ConversationUnread(uid), conversationIDStr, 1).Err()
 			if err != nil {

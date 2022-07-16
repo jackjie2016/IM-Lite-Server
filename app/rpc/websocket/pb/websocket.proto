@@ -67,6 +67,7 @@ message IMMsgDataMQ {
 message IMMsgPushMQ {
   string traceId = 1;
   PushBody pushBody = 2;
+  repeated string addUserIds = 3;
 }
 /******************************** params ********************************/
 message ListUserConversationReq {

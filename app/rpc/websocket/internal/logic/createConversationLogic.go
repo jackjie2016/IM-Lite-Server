@@ -5,6 +5,8 @@ import (
 	"errors"
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/internal/database"
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/internal/model"
+	"github.com/IM-Lite/IM-Lite-Server/common/xtrace"
+	"google.golang.org/protobuf/proto"
 	"time"
 
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/internal/svc"
@@ -39,6 +41,18 @@ func (l *CreateConversationLogic) CreateConversation(in *pb.CreateConversationRe
 	if err != nil {
 		l.Errorf("update conversation min seq error: %s", err.Error())
 		return &pb.CreateConversationResp{}, err
+	}
+	{
+		mq := &pb.IMMsgPushMQ{PushBody: &pb.PushBody{
+			Event: pb.PushEvent_updateConv,
+			Data:  nil,
+		}, TraceId: xtrace.TraceIdFromContext(ctx)}
+		value, _ := proto.Marshal(mq)
+		ctx, _ = context.WithTimeout(ctx, time.Second*1)
+		_, _, err = l.svcCtx.PushPusher().SendMessage(ctx, value, conversationID)
+		if err != nil {
+			logx.Errorf("push to kafka error, err: %s", err.Error())
+		}
 	}
 	return &pb.CreateConversationResp{ConversationId: conversationID}, nil
 }
