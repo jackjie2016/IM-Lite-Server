@@ -6,6 +6,10 @@
 
 ![通讯流程.svg](https://raw.githubusercontent.com/showurl/images/73a15955a98f2b6c2a21ab5be58d7ee1a89fdacc/IM-Lite%E9%80%9A%E8%AE%AF%E6%B5%81%E7%A8%8B.svg)
 
+## 超快的通讯 仅需20ms
+
+![jaeger.png](https://raw.githubusercontent.com/showurl/images/master/Lite-Server%20jaeger.png)
+
 ## 配置
 
 > 如果你使用过 [go-zero](https://github.com/zeromicro/go-zero) 框架 你将对配置非常熟悉
