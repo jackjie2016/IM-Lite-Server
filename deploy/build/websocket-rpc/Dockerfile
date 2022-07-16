@@ -27,4 +27,4 @@ WORKDIR /app
 COPY --from=builder /dist/main /app/websocket
 RUN chmod +x /app/websocket && mkdir /app/etc
 VOLUME /app/etc/websocket.yaml
-CMD ["/app/websocket"]
+ENTRYPOINT ["/app/websocket"]
