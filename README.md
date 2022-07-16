@@ -32,18 +32,24 @@
 | Mongo.DBTimeout         | 请求超时时间，单位秒                | int      |                                         |
 | Pushers.Msg.Addrs       | 用户发送消息存入kafka的配置，broker地址 | []string |                                         |
 | Pushers.Msg.Topic       | 用户发送消息存入kafka的配置，topic名称  | string   |                                         |
+| Pushers.Msg.User      | kafka sasl plain username | string   | 可不传                                     |
+| Pushers.Msg.Passwd    | kafka sasl plain password | string   | 可不传                                     |
+| Pushers.Msg.Partition    | topic 分区数                 | int      | 默认 `1`                                    |
 | Pushers.Push.Addrs      | 消息落库后推送到kafka的配置，broker地址 | []string |                                         |
 | Pushers.Push.Topic      | 消息落库后推送到kafka的配置，topic名称  | string   |                                         |
+| Pushers.Push.User      | kafka sasl plain username | string   | 可不传                                     |
+| Pushers.Push.Passwd    | kafka sasl plain password | string   | 可不传                                     |
+| Pushers.Push.Partition    | topic 分区数 | string   | 默认 `1`                                     |
 | Consumers.Msg.Addrs     | 消费用户发送到消息，broker地址        | []string |                                         |
 | Consumers.Msg.Topic     | 消费用户发送到消息，topic名称         | string   |                                         |
 | Consumers.Msg.Consumers | 启动的消费者数量                  | int      | 默认 `8`                                  |
 | Consumers.Msg.User      | kafka sasl plain username | string   | 可不传                                     |
-| Consumers.Msg.Passwd    | kafka sasl plain password | string   | 可不传                                       |
+| Consumers.Msg.Passwd    | kafka sasl plain password | string   | 可不传                                     |
 | Consumers.Push.Addrs    | 消费推送任务(广播模式)，broker地址     | []string |                                         |
 | Consumers.Push.Topic    | 消费推送任务(广播模式)，topic名称      | string   |                                         |
 | Consumers.Push.Consumers | 启动的消费者数量                  | int      | 默认 `8`                                  |
 | Consumers.Push.User      | kafka sasl plain username | string   | 可不传                                     |
-| Consumers.Push.Passwd    | kafka sasl plain password | string   | 可不传                                       |
+| Consumers.Push.Passwd    | kafka sasl plain password | string   | 可不传                                     |
 
 ### 环境变量
 

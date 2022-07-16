@@ -10,10 +10,11 @@ import (
 )
 
 type ProducerConfig struct {
-	Addrs  []string `json:""`
-	Topic  string   `json:""`
-	User   string   `json:",optional"`
-	Passwd string   `json:",optional"`
+	Addrs     []string `json:""`
+	Topic     string   `json:""`
+	User      string   `json:",optional"`
+	Passwd    string   `json:",optional"`
+	Partition int      `json:",default:1"`
 }
 
 type Producer struct {
@@ -49,15 +50,18 @@ func MustNewProducer(config ProducerConfig) *Producer {
 		logx.Errorf("kafka.NewAdminClientFromProducer error: %v", err)
 		panic(err)
 	}
-	metadata, err := admin.GetMetadata(&config.Topic, false, 10000)
+	var partitionIDs []int32
+	metadata, err := admin.GetMetadata(&config.Topic, false, 5000)
 	if err != nil {
 		logx.Errorf("kafka.GetMetadata error: %v", err)
-		panic(err)
-	}
-	var partitionIDs []int32
-	for i, partition := range metadata.Topics[config.Topic].Partitions {
-		logx.Infof("kafka.GetMetadata: %s:%d partition: %+v", config.Topic, i, partition)
-		partitionIDs = append(partitionIDs, partition.ID)
+		for i := 0; i < config.Partition; i++ {
+			partitionIDs = append(partitionIDs, int32(i))
+		}
+	} else {
+		for i, partition := range metadata.Topics[config.Topic].Partitions {
+			logx.Infof("kafka.GetMetadata: %s:%d partition: %+v", config.Topic, i, partition)
+			partitionIDs = append(partitionIDs, partition.ID)
+		}
 	}
 	ch := make(chan kafka.Event)
 	return &Producer{
