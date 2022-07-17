@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/confluentinc/confluent-kafka-go v1.9.1
-	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/zeromicro/go-zero v1.3.5
 	go.mongodb.org/mongo-driver v1.9.1
