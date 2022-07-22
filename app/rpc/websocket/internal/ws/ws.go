@@ -45,6 +45,7 @@ func (l *Ws) WsUpgrade(ctx context.Context, uid string, req *ConnRequest, w http
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		CompressionMode:      websocket.CompressionDisabled,
 		CompressionThreshold: 0,
+		OriginPatterns:       []string{"*"},
 	})
 	if err != nil {
 		logger.Errorf("WsUpgrade error: %s", err)

@@ -15,6 +15,8 @@ import (
 type (
 	ClearUnreadCountReq                  = pb.ClearUnreadCountReq
 	ClearUnreadCountResp                 = pb.ClearUnreadCountResp
+	ConvData                             = pb.ConvData
+	ConvDataList                         = pb.ConvDataList
 	CreateConversationReq                = pb.CreateConversationReq
 	CreateConversationResp               = pb.CreateConversationResp
 	DeleteConversationAllMsgReq          = pb.DeleteConversationAllMsgReq
@@ -33,8 +35,10 @@ type (
 	MsgDataList                          = pb.MsgDataList
 	MsgOptions                           = pb.MsgOptions
 	OfflinePush                          = pb.OfflinePush
+	PullMsg                              = pb.PullMsg
 	PullMsgBySeqReq                      = pb.PullMsgBySeqReq
 	PullMsgBySeqResp                     = pb.PullMsgBySeqResp
+	PullMsgList                          = pb.PullMsgList
 	PushBody                             = pb.PushBody
 	SendMsgReq                           = pb.SendMsgReq
 	SendMsgResp                          = pb.SendMsgResp

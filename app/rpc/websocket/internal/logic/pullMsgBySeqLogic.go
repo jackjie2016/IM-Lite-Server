@@ -35,13 +35,24 @@ func (l *PullMsgBySeqLogic) PullMsgBySeq(in *pb.PullMsgBySeqReq) (*pb.PullMsgByS
 		resp = append(resp, &pb.MsgData{
 			ClientMsgID: chatLog.ClientMsgID,
 			ServerMsgID: chatLog.ServerMsgID.Hex(),
-			ClientTime:  chatLog.ClientTime,
-			ServerTime:  chatLog.ServerTime,
 			SenderID:    chatLog.SenderID,
 			ConvID:      chatLog.ConversationID.Hex(),
 			ContentType: chatLog.Data.ContentType,
 			Content:     chatLog.Data.Content,
+			ClientTime:  chatLog.ClientTime,
+			ServerTime:  chatLog.ServerTime,
 			Seq:         chatLog.Seq,
+			OfflinePush: &pb.OfflinePush{
+				Title:         chatLog.OfflinePush.Title,
+				Desc:          chatLog.OfflinePush.Desc,
+				Ex:            chatLog.OfflinePush.Ex,
+				IOSPushSound:  chatLog.OfflinePush.IOSPushSound,
+				IOSBadgeCount: chatLog.OfflinePush.IOSBadgeCount,
+			},
+			MsgOptions: &pb.MsgOptions{
+				Storage: chatLog.MsgOptions.Storage,
+				Unread:  chatLog.MsgOptions.Unread,
+			},
 		})
 	}
 	return &pb.PullMsgBySeqResp{MsgList: resp, ConversationId: in.ConversationId}, nil

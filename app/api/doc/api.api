@@ -11,23 +11,11 @@ info(
 
 type ReqGetConversationList {
 }
-type ModelConversation {
-	ConvId      string `json:"convId"`
-	MaxSeq      uint32 `json:"maxSeq"`
-	MinSeq      uint32 `json:"minSeq"`
-	UnreadCount uint32 `json:"unreadCount"`
-}
 type RespGetConversationList {
-	Conversations []*ModelConversation `json:"conversations"`
-}
-type ReqPullMessage {
-	ConvId    string   `json:"convId"`
-	SeqList   []uint32 `json:"seqList"`
-	OldestSeq uint32   `json:"oldestSeq,optional"`
-	PageSize  int32    `json:"pageSize,optional"`
+	Message []byte `json:"message"`
 }
 type ReqPullMessages {
-	Convs []*ReqPullMessage `json:"convs"`
+	Message []byte `json:"message"`
 }
 type RespPullMessages {
 	MessageLists []byte `json:"messages"`
@@ -58,29 +46,29 @@ service api {
 		summary: "获取会话列表"
 	)
 	@handler GetConversationList
-	post /websocket/v1/conversation/list (ReqGetConversationList) returns (RespGetConversationList)
+	post /im/v1/conversation/list (ReqGetConversationList) returns (RespGetConversationList)
 	
 	@doc(
 		summary: "批量拉取消息"
 	)
 	@handler PullMessages
-	post /websocket/v1/message/pull/batch (ReqPullMessages) returns (RespPullMessages)
+	post /im/v1/message/pull/batch (ReqPullMessages) returns (RespPullMessages)
 	
 	@doc(
 		summary: "发送消息"
 	)
 	@handler SendMessage
-	post /websocket/v1/message/send (ReqSendMessage) returns (RespSendMessage)
+	post /im/v1/message/send (ReqSendMessage) returns (RespSendMessage)
 	
 	@doc(
 		summary: "清空未读数量"
 	)
 	@handler ClearUnreadCount
-	post /websocket/v1/conversation/clear/unread (ReqClearUnreadCount) returns (RespClearUnreadCount)
+	post /im/v1/conversation/clear/unread (ReqClearUnreadCount) returns (RespClearUnreadCount)
 	
 	@doc(
 		summary: "清空会话消息"
 	)
 	@handler ClearHistory
-	post /websocket/v1/conversation/clear/history (ReqClearHistory) returns (RespClearHistory)
+	post /im/v1/conversation/clear/history (ReqClearHistory) returns (RespClearHistory)
 }

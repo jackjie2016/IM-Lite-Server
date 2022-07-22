@@ -24,7 +24,7 @@ func SendMessageHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := logic.NewSendMessageLogic(r.Context(), svcCtx)
 		resp, err := l.SendMessage(&req)
 		if err != nil {
-			httpx.OkJson(w, xhttp.Failed(err))
+			httpx.Error(w, err)
 		} else {
 			httpx.OkJson(w, xhttp.Success(resp))
 		}

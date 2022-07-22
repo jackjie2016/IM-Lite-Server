@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/internal/model"
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/internal/svc"
+	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/pb"
 	"github.com/IM-Lite/IM-Lite-Server/common/utils"
 	"github.com/IM-Lite/IM-Lite-Server/common/xredis/rediskey"
 	"github.com/IM-Lite/IM-Lite-Server/common/xtrace"
@@ -21,6 +22,76 @@ type Default struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+}
+
+const (
+	// 传递 redisKeys 进行 incrUnread
+	incrUnreadScript = `local convid = ARGV[1]
+for i, rediskey in ipairs(KEYS) do redis.call("HINCRBY", rediskey, convid, 1) end return 1`
+)
+
+var (
+	incrUnreadScriptSha = ""
+)
+
+func (l *Default) IncrUnread(conversation *model.Conversation, msg *pb.MsgData) {
+	var uids []string
+	for _, member := range conversation.Members {
+		if member != msg.SenderID {
+			uids = append(uids, member)
+		}
+	}
+	if len(uids) == 0 {
+		return
+	}
+	// 给这些用户增加未读消息
+	var redisKeys []string
+	for _, uid := range uids {
+		redisKeys = append(redisKeys, rediskey.ConversationUnread(uid))
+	}
+	if incrUnreadScriptSha == "" {
+		_, err := l.svcCtx.Redis().Eval(l.ctx, incrUnreadScript, redisKeys, msg.ConvID).Result()
+		if err != nil {
+			l.Errorf("incr unread failed, err: %v", err)
+			for _, key := range redisKeys {
+				e := l.svcCtx.Redis().HIncrBy(l.ctx, key, msg.ConvID, 1).Err()
+				if e != nil {
+					l.Errorf("incr unread failed, err: %v", e)
+				}
+			}
+		} else {
+			incrUnreadScriptSha, err = l.svcCtx.Redis().ScriptLoad(l.ctx, incrUnreadScript).Result()
+			if err != nil {
+				l.Errorf("incr unread failed, err: %v", err)
+			}
+		}
+	} else {
+		_, err := l.svcCtx.Redis().EvalSha(l.ctx, incrUnreadScriptSha, redisKeys, msg.ConvID).Result()
+		if err != nil {
+			l.Errorf("incr unread failed, err: %v", err)
+		}
+	}
+}
+
+func (l *Default) GetConversation(conversationIDStr string) (conversation *model.Conversation, err error) {
+	conversationID, err := primitive.ObjectIDFromHex(conversationIDStr)
+	if err != nil {
+		l.Errorf("conversationIDStr to ObjectID error, conversationID: %s, err: %s", conversationIDStr, err)
+		return nil, err
+	}
+	ctx, _ := context.WithTimeout(l.ctx, time.Second*time.Duration(l.svcCtx.Config.Mongo.DBTimeout))
+	conversation = &model.Conversation{}
+	err = l.svcCtx.Collection(conversation).FindOne(ctx, bson.M{"_id": conversationID}).Decode(conversation)
+	if err != nil {
+		// 是否是找不到
+		if err == mongo.ErrNoDocuments {
+			l.Infof("this conversation is not exist, conversationID: %s", conversationID)
+			return nil, nil
+		}
+		l.Errorf("find conversation error, conversationID: %s, err: %s", conversationID, err)
+		return nil, err
+	}
+	return conversation, nil
 }
 
 func (l *Default) HasConversation(conversationIDStr string) (bool, error) {

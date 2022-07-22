@@ -16,27 +16,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/websocket/v1/conversation/list",
+					Path:    "/im/v1/conversation/list",
 					Handler: GetConversationListHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/websocket/v1/message/pull/batch",
+					Path:    "/im/v1/message/pull/batch",
 					Handler: PullMessagesHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/websocket/v1/message/send",
+					Path:    "/im/v1/message/send",
 					Handler: SendMessageHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/websocket/v1/conversation/clear/unread",
+					Path:    "/im/v1/conversation/clear/unread",
 					Handler: ClearUnreadCountHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/websocket/v1/conversation/clear/history",
+					Path:    "/im/v1/conversation/clear/history",
 					Handler: ClearHistoryHandler(serverCtx),
 				},
 			}...,

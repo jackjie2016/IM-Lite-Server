@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/internal/model"
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/internal/svc"
+	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/pb"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,4 +29,6 @@ type Database interface {
 	ListUserConversations(userID string, pageNo int, pageSize int64) ([]*model.MidUserConversation, error)
 	// PullMsgBySeq 拉取会话消息
 	PullMsgBySeq(conversationID string, userID string, maxSeq uint32, pageSize int64) ([]*model.ChatLog, error)
+	IncrUnread(conversation *model.Conversation, msg *pb.MsgData)
+	GetConversation(conversationID string) (*model.Conversation, error)
 }

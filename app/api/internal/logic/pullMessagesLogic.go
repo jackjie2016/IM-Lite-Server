@@ -28,9 +28,22 @@ func NewPullMessagesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Pull
 }
 
 func (l *PullMessagesLogic) PullMessages(req *types.ReqPullMessages) (resp *types.RespPullMessages, ierr xhttp.ICodeErr) {
+	in := &pb.PullMsgList{}
+	err := proto.Unmarshal(req.Message, in)
+	if err != nil {
+		return nil, xhttp.NewParamErr(err)
+	}
+
 	var messageList = &pb.MsgDataList{}
 	uid := xhttp.GetUidFromCtx(l.ctx)
-	for _, conv := range req.Convs {
+	type Conv struct {
+		ConvId    string
+		SeqList   []uint32
+		OldestSeq uint32
+		PageSize  int32
+	}
+	var convs []*Conv
+	for _, conv := range in.List {
 		// 验证参数
 		if len(conv.ConvId) == 0 {
 			return nil, xhttp.NewParamErrByMsg("conv_id不能为空")
@@ -44,11 +57,15 @@ func (l *PullMessagesLogic) PullMessages(req *types.ReqPullMessages) (resp *type
 				return nil, xhttp.NewParamErrByMsg("seqList不是连续加一的")
 			}
 		}
-		conv.OldestSeq = conv.SeqList[0]
-		conv.PageSize = int32(len(conv.SeqList))
+		convs = append(convs, &Conv{
+			ConvId:    conv.ConvId,
+			SeqList:   conv.SeqList,
+			OldestSeq: conv.SeqList[len(conv.SeqList)-1] + 1,
+			PageSize:  int32(len(conv.SeqList)),
+		})
 	}
 	var fs []func() error
-	for _, conv := range req.Convs {
+	for _, conv := range convs {
 		fs = append(fs, func() error {
 			pullMsgBySeqResp, err := l.svcCtx.WebsocketService().PullMsgBySeq(l.ctx, &pb.PullMsgBySeqReq{
 				ConversationId: conv.ConvId,

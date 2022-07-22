@@ -48,6 +48,26 @@ message MsgOptions{
   bool unread = 2;
 }
 
+message ConvData {
+  string convId = 1;
+  uint32 maxSeq = 2;
+  uint32 minSeq = 3;
+  uint32 unreadCount = 4;
+}
+
+message ConvDataList {
+  repeated ConvData list = 1;
+}
+
+message PullMsg {
+  string ConvId = 1;
+  repeated uint32 SeqList = 2;
+}
+
+message PullMsgList {
+  repeated PullMsg list = 1;
+}
+
 message UserConversation {
   string id = 1; // 对话id
   string name = 2; // 对话名称

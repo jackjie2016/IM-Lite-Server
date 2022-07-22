@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/IM-Lite/IM-Lite-Server/app/rpc/websocket/pb"
 	"github.com/IM-Lite/IM-Lite-Server/common/xhttp"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/IM-Lite/IM-Lite-Server/app/api/internal/svc"
 	"github.com/IM-Lite/IM-Lite-Server/app/api/internal/types"
@@ -36,13 +37,16 @@ func (l *GetConversationListLogic) GetConversationList(req *types.ReqGetConversa
 		l.Infof("ListUserConversation resp: %v", listUserConversationResp.String())
 	}
 	resp = &types.RespGetConversationList{}
+	var message = &pb.ConvDataList{}
 	for _, conversation := range listUserConversationResp.UserConversations {
-		resp.Conversations = append(resp.Conversations, &types.ModelConversation{
+		message.List = append(message.List, &pb.ConvData{
 			ConvId:      conversation.Id,
 			MaxSeq:      conversation.Seq,
 			MinSeq:      conversation.MinSeq,
 			UnreadCount: conversation.Unread,
 		})
 	}
+	buf, _ := proto.Marshal(message)
+	resp.Message = buf
 	return
 }

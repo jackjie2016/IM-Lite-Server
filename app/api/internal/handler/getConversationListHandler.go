@@ -22,7 +22,8 @@ func GetConversationListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		if err != nil {
 			httpx.Error(w, err)
 		} else {
-			httpx.OkJson(w, resp)
+			_, _ = w.Write(resp.Message)
+			httpx.Ok(w)
 		}
 	}
 }

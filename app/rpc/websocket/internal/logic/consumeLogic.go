@@ -62,17 +62,18 @@ func (l *ConsumeLogic) ConsumerMsg(ctx context.Context, conversationIDStr string
 	logger := l.WithContext(ctx)
 	// 新增消息
 	conversationID, err := primitive.ObjectIDFromHex(conversationIDStr)
+	var conversation *model.Conversation
 	if err != nil {
 		logger.Errorf("conversationIDStr to ObjectID error, conversationID: %s, err: %s", conversationIDStr, err)
 		return nil
 	}
 	{ // 是否有这个会话
-		has, err := database.NewDefault(l.svcCtx, l.ctx).HasConversation(conversationIDStr)
+		conversation, err = database.NewDefault(l.svcCtx, l.ctx).GetConversation(conversationIDStr)
 		if err != nil {
 			l.Errorf("has conversation error: %s", err.Error())
 			return err
 		}
-		if !has {
+		if conversation == nil {
 			logger.Errorf("has conversation error, conversationID: %s", conversationIDStr)
 			return nil
 		}
@@ -90,6 +91,8 @@ func (l *ConsumeLogic) ConsumerMsg(ctx context.Context, conversationIDStr string
 				ContentType: msg.Msg.ContentType,
 				Content:     msg.Msg.Content,
 			},
+			OfflinePush: model.NewOfflinePush(msg.Msg.OfflinePush),
+			MsgOptions:  model.NewMsgOptions(msg.Msg.MsgOptions),
 		}
 	)
 	if msg.Msg.IsStore() {
@@ -98,6 +101,9 @@ func (l *ConsumeLogic) ConsumerMsg(ctx context.Context, conversationIDStr string
 			l.Errorf("insert message error: %s", err.Error())
 			return err
 		}
+	}
+	if msg.Msg.IsIncrUnread() {
+		database.NewDefault(l.svcCtx, ctx).IncrUnread(conversation, msg.Msg)
 	}
 	// 推送
 	msgData := &pb.MsgData{
@@ -147,7 +153,7 @@ func (l *ConsumeLogic) ConsumerPush(ctx context.Context, conversationIDStr strin
 	}
 	w := ws.GetWs(l.svcCtx)
 	for _, uid := range append(listAllSubscribersByConversationResp.UserIds, msg.AddUserIds...) {
-		if msgData != nil && msgData.IsIncrUnread() {
+		if msgData != nil && msgData.IsIncrUnread() && uid != msgData.SenderID {
 			err := l.svcCtx.Redis().HIncrBy(ctx, rediskey.ConversationUnread(uid), conversationIDStr, 1).Err()
 			if err != nil {
 				logger.Errorf("incr conversation unread error: %s", err.Error())

@@ -2,7 +2,7 @@
 
 1. route definition
 
-- Url: /websocket/v1/conversation/list
+- Url: /im/v1/conversation/list
 - Method: POST
 - Request: `ReqGetConversationList`
 - Response: `RespGetConversationList`
@@ -23,7 +23,7 @@ type ReqGetConversationList struct {
 
 ```golang
 type RespGetConversationList struct {
-	Conversations []*ModelConversation `json:"conversations"`
+	Message []byte `json:"message"`
 }
 ```
 
@@ -31,7 +31,7 @@ type RespGetConversationList struct {
 
 1. route definition
 
-- Url: /websocket/v1/message/pull/batch
+- Url: /im/v1/message/pull/batch
 - Method: POST
 - Request: `ReqPullMessages`
 - Response: `RespPullMessages`
@@ -42,7 +42,7 @@ type RespGetConversationList struct {
 
 ```golang
 type ReqPullMessages struct {
-	Convs []*ReqPullMessage `json:"convs"`
+	Message []byte `json:"message"`
 }
 ```
 
@@ -61,7 +61,7 @@ type RespPullMessages struct {
 
 1. route definition
 
-- Url: /websocket/v1/message/send
+- Url: /im/v1/message/send
 - Method: POST
 - Request: `ReqSendMessage`
 - Response: `RespSendMessage`
@@ -91,7 +91,7 @@ type RespSendMessage struct {
 
 1. route definition
 
-- Url: /websocket/v1/conversation/clear/unread
+- Url: /im/v1/conversation/clear/unread
 - Method: POST
 - Request: `ReqClearUnreadCount`
 - Response: `RespClearUnreadCount`
@@ -120,7 +120,7 @@ type RespClearUnreadCount struct {
 
 1. route definition
 
-- Url: /websocket/v1/conversation/clear/history
+- Url: /im/v1/conversation/clear/history
 - Method: POST
 - Request: `ReqClearHistory`
 - Response: `RespClearHistory`

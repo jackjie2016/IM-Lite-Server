@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/IM-Lite/IM-Lite-Server/common/xhttp"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/IM-Lite/IM-Lite-Server/app/api/internal/logic"
@@ -12,12 +13,14 @@ import (
 
 func PullMessagesHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.ReqPullMessages
-		if err := httpx.Parse(r, &req); err != nil {
-			httpx.OkJson(w, xhttp.NewParamErr(err))
+		defer r.Body.Close()
+		bytes, e := ioutil.ReadAll(r.Body)
+		if e != nil {
+			httpx.OkJson(w, xhttp.NewParamErr(e))
 			return
 		}
-
+		var req types.ReqPullMessages
+		req.Message = bytes
 		l := logic.NewPullMessagesLogic(r.Context(), svcCtx)
 		resp, err := l.PullMessages(&req)
 		if err != nil {
