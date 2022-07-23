@@ -79,7 +79,7 @@ func (l *ConsumeLogic) ConsumerMsg(ctx context.Context, conversationIDStr string
 		}
 	}
 	var (
-		now     = time.Now().UnixNano()
+		now     = time.Now().UnixMilli()
 		chatLog = &model.ChatLog{
 			ConversationID: conversationID,
 			ClientMsgID:    msg.Msg.ClientMsgID,
