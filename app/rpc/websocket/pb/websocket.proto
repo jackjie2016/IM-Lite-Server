@@ -49,7 +49,7 @@ message MsgOptions{
 }
 
 message ConvData {
-  string convId = 1;
+  string convID = 1;
   uint32 maxSeq = 2;
   uint32 minSeq = 3;
   uint32 unreadCount = 4;
@@ -60,7 +60,7 @@ message ConvDataList {
 }
 
 message PullMsg {
-  string ConvId = 1;
+  string convID = 1;
   repeated uint32 SeqList = 2;
 }
 

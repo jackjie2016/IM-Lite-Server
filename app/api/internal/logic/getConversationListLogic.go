@@ -40,7 +40,7 @@ func (l *GetConversationListLogic) GetConversationList(req *types.ReqGetConversa
 	var message = &pb.ConvDataList{}
 	for _, conversation := range listUserConversationResp.UserConversations {
 		message.List = append(message.List, &pb.ConvData{
-			ConvId:      conversation.Id,
+			ConvID:      conversation.Id,
 			MaxSeq:      conversation.Seq,
 			MinSeq:      conversation.MinSeq,
 			UnreadCount: conversation.Unread,

@@ -45,7 +45,7 @@ func (l *PullMessagesLogic) PullMessages(req *types.ReqPullMessages) (resp *type
 	var convs []*Conv
 	for _, conv := range in.List {
 		// 验证参数
-		if len(conv.ConvId) == 0 {
+		if len(conv.ConvID) == 0 {
 			return nil, xhttp.NewParamErrByMsg("conv_id不能为空")
 		}
 		// conv.SeqList 是否是连续的 从小到大的
@@ -58,7 +58,7 @@ func (l *PullMessagesLogic) PullMessages(req *types.ReqPullMessages) (resp *type
 			}
 		}
 		convs = append(convs, &Conv{
-			ConvId:    conv.ConvId,
+			ConvId:    conv.ConvID,
 			SeqList:   conv.SeqList,
 			OldestSeq: conv.SeqList[len(conv.SeqList)-1] + 1,
 			PageSize:  int32(len(conv.SeqList)),
